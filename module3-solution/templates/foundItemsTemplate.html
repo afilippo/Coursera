@@ -1,0 +1,26 @@
+<div class="row" ng-if="foundItemsControl.isItemsExist()">
+    <div class="col">
+    <table class="table table-hover table-bordered ">
+    <thead>
+        <tr>
+            <th>Short Name</th>
+            <th>Description</th>
+            <th>Don't want this one!</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="item in foundItemsControl.items">
+            <td>{{item.short_name}}</td>
+            <td>{{item.description}}</td>
+            <td>
+                <button class="btn btn-primary"
+                    ng-click="foundItemsControl.onRemove({index: $index});">Don't want this one!</button>
+            </td>
+        </tr>
+    </tbody>
+    </table>
+    </div>
+</div>
+<div class="row"
+  <div class="error" ng-if="!foundItemsControl.isItemsFound()"> Nothing found </div>
+</div>
