@@ -16,7 +16,8 @@
     // getMenuItems()
     nitControl.getMenuItems = function(searchTerm){
       console.log("getMenuItems(): IN");
-      if (searchTerm.trim() !== "") {
+      searchTerm = searchTerm.trim().toLowerCase();
+      if (searchTerm !== "") {
         MenuSearchService.getMatchedMenuItems(searchTerm)
         .then(function(result){
           nitControl.found = result;
@@ -52,7 +53,7 @@
           return foundItems;
 
         for (var i=0; i < items.length; i++) {
-          if (items[i].description.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1) {
+          if (items[i].description.toLowerCase().indexOf(searchTerm) !== -1) {
             foundItems.push(items[i]);
           }
         }
