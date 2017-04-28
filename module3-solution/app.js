@@ -15,10 +15,13 @@
 
     // getMenuItems()
     nitControl.getMenuItems = function(searchTerm){
-      MenuSearchService.getMatchedMenuItems(searchTerm)
-      .then(function(result){
-        nitControl.found = result;
-      });
+      console.log("getMenuItems(): IN");
+      if (searchTerm.trim() !== "") {
+        MenuSearchService.getMatchedMenuItems(searchTerm)
+        .then(function(result){
+          nitControl.found = result;
+        });
+      }
     }
 
     // removeItem()
@@ -35,6 +38,8 @@
 
     // getMatchedMenuItems(searchTerm)
     service.getMatchedMenuItems = function(searchTerm) {
+      searchTerm = searchTerm.trim().toLowerCase();
+
       return $http({
         method: 'GET',
         url: (APIBaseURL + '/menu_items.json')
