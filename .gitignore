@@ -56,6 +56,7 @@ Thumbs.db
 ###########################
 .settings/
 assignment[1-5]/
+code_excerpts.txt
 
 # Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
 # should NOT be excluded as they contain compiler settings and other important
