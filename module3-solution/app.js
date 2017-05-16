@@ -3,11 +3,12 @@
 
   angular.module('NarrowItDownApp', [])
   .controller('NarrowItDownController', NarrowItDownController)
-  .service("MenuSearchService", MenuSearchService)
-  .directive("foundItems", FoundItemsDirective)
+  .service('MenuSearchService', MenuSearchService)
+  .directive('foundItems', FoundItemsDirective)
   .constant('APIBaseURL', "https://davids-restaurant.herokuapp.com");
 
-  // Main Controllers area
+  // ##### Controllers area #####
+  // NarrowItDownController
   NarrowItDownController.$inject = ['MenuSearchService'];
   function NarrowItDownController(MenuSearchService) {
     var nitControl = this;
@@ -15,12 +16,14 @@
 
     // getMenuItems()
     nitControl.getMenuItems = function(searchTerm){
-      console.log("getMenuItems(): IN");
       searchTerm = searchTerm.trim().toLowerCase();
+
       if (searchTerm !== "") {
+        if (nitControl.found && nitControl.found.length > 0)
+          nitControl.found.splice(0, nitControl.found.length);
         MenuSearchService.getMatchedMenuItems(searchTerm)
-        .then(function(result){
-          nitControl.found = result;
+        .then(function(response) {
+          nitControl.found = response;
         });
       }
     }
@@ -29,9 +32,10 @@
     nitControl.removeItem  = function(index) {
       MenuSearchService.removeItem(index);
     };
-  }
+  } // NarrowItDownController
 
-  // Services area
+  // ##### Services area #####
+  // MenuSearchService
   MenuSearchService.$inject = ['$http', 'APIBaseURL'];
   function MenuSearchService($http, APIBaseURL) {
     var service = this;
@@ -45,8 +49,8 @@
         method: 'GET',
         url: (APIBaseURL + '/menu_items.json')
       })
-      .then(function(result) {
-        var items = result.data.menu_items;
+      .then(function(response) {
+        var items = response.data.menu_items;
         // var foundItems = [];
 
         if (!searchTerm)
@@ -62,16 +66,43 @@
       .catch(function(error) {
         return error.data;
       });
+
+      // var httpPromise =
+      //   $http({
+      //     method: 'GET',
+      //     url: (APIBaseURL + '/menu_items.json')
+      //   })
+      //   .then(function(response) {
+      //     var items = response.data.menu_items;
+      //     // var foundItems = [];
+      //
+      //     if (!searchTerm)
+      //       return foundItems;
+      //
+      //     for (var i=0; i < items.length; i++) {
+      //       if (items[i].description.toLowerCase().indexOf(searchTerm) !== -1) {
+      //         foundItems.push(items[i]);
+      //       }
+      //     }
+      //     return foundItems;
+      //   })
+      //   .catch(function(error) {
+      //     return error.data;
+      //   });
+      //
+      // return httpPromise
+
     };
 
-    service.removeItem = function (itemIndex) {
+    // removeItem(itemIndex)
+    service.removeItem = function(itemIndex) {
       foundItems.splice(itemIndex, 1);
     };
 
-  }
+  } // MenuSearchService
 
-  // Directives area
-  // FoundItemsDirective()
+  // ##### Directives area #####
+  // FoundItemsDirective
   function FoundItemsDirective() {
     var ddo = {
       templateUrl: 'templates/foundItemsTemplate.html',
@@ -79,6 +110,7 @@
         items: '<',
         onRemove: '&'
       },
+      restricted: 'E',
       controller: FoundItemsDirectiveController,
       controllerAs: 'foundItemsControl',
       bindToController: true
@@ -92,16 +124,20 @@
     // isItemsExist()
     foundItemsControl.isItemsExist = function() {
       if ((foundItemsControl.items && foundItemsControl.items.length > 0 )) {
+        //console.log("isItemsExist TRUE - items.length", foundItemsControl.items.length);
         return true;
       }
+      //console.log("isItemsExist FALSE - items.length", foundItemsControl.items.length);
       return false;
     }
 
     // itemsFound()
     foundItemsControl.isItemsFound = function() {
       if ((foundItemsControl.items && foundItemsControl.items.length === 0 )) {
+        //console.log("isItemsFound FALSE - items.length", foundItemsControl.items.length);
         return false;
       }
+      //console.log("isItemsFound TRUE - items.length", foundItemsControl.items.length);
       return true;
     }
   }
