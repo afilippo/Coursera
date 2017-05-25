@@ -25,7 +25,7 @@
       }
     }
 
-    // function removeItem()
+    // function removeItem(index)
     nitControl.removeItem  = function(index) {
       MenuSearchService.removeItem(index);
     };
