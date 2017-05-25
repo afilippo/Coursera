@@ -7,13 +7,14 @@
   .directive("foundItems", FoundItemsDirective)
   .constant('APIBaseURL', "https://davids-restaurant.herokuapp.com");
 
-  // Main Controllers area
+  // ##### Main Controllers area #####
+  // Controller NarrowItDownController(MenuSearchService)
   NarrowItDownController.$inject = ['MenuSearchService'];
   function NarrowItDownController(MenuSearchService) {
     var nitControl = this;
     nitControl.searchTerm = "";
 
-    // getMenuItems()
+    // function getMenuItems(serachTerm)
     nitControl.getMenuItems = function(searchTerm){
       searchTerm = searchTerm.trim().toLowerCase();
       if (searchTerm !== "") {
@@ -24,13 +25,14 @@
       }
     }
 
-    // removeItem()
+    // function removeItem()
     nitControl.removeItem  = function(index) {
       MenuSearchService.removeItem(index);
     };
   }
 
-  // Services area
+  // ##### Services area #####
+  // Service MenuSearchService($http, APIBaseURL)
   MenuSearchService.$inject = ['$http', 'APIBaseURL'];
   function MenuSearchService($http, APIBaseURL) {
     var service = this;
@@ -78,8 +80,8 @@
 
   }
 
-  // Directives area
-  // FoundItemsDirective()
+  // ##### Directives area #####
+  // Directive FoundItemsDirective()
   function FoundItemsDirective() {
     var ddo = {
       templateUrl: 'templates/foundItemsTemplate.html',
@@ -93,11 +95,11 @@
     }
     return ddo;
   }
-
+  // Directive Controller FoundItemsDirectiveController()
   function FoundItemsDirectiveController() {
     var foundItemsControl = this;
 
-    // isItemsExist()
+    // function isItemsExist()
     foundItemsControl.isItemsExist = function() {
       if ((foundItemsControl.items && foundItemsControl.items.length > 0 )) {
         return true;
@@ -105,7 +107,7 @@
       return false;
     }
 
-    // itemsFound()
+    // function isItemsFound()
     foundItemsControl.isItemsFound = function() {
       if ((foundItemsControl.items && foundItemsControl.items.length === 0 )) {
         return false;
