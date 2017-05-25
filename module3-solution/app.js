@@ -3,12 +3,11 @@
 
   angular.module('NarrowItDownApp', [])
   .controller('NarrowItDownController', NarrowItDownController)
-  .service('MenuSearchService', MenuSearchService)
-  .directive('foundItems', FoundItemsDirective)
+  .service("MenuSearchService", MenuSearchService)
+  .directive("foundItems", FoundItemsDirective)
   .constant('APIBaseURL', "https://davids-restaurant.herokuapp.com");
 
-  // ##### Controllers area #####
-  // NarrowItDownController
+  // Main Controllers area
   NarrowItDownController.$inject = ['MenuSearchService'];
   function NarrowItDownController(MenuSearchService) {
     var nitControl = this;
@@ -17,13 +16,10 @@
     // getMenuItems()
     nitControl.getMenuItems = function(searchTerm){
       searchTerm = searchTerm.trim().toLowerCase();
-
       if (searchTerm !== "") {
-        if (nitControl.found && nitControl.found.length > 0)
-          nitControl.found.splice(0, nitControl.found.length);
         MenuSearchService.getMatchedMenuItems(searchTerm)
-        .then(function(response) {
-          nitControl.found = response;
+        .then(function(result){
+          nitControl.found = result;
         });
       }
     }
@@ -32,33 +28,27 @@
     nitControl.removeItem  = function(index) {
       MenuSearchService.removeItem(index);
     };
-  } // NarrowItDownController
+  }
 
-  // ##### Services area #####
-  // MenuSearchService
+  // Services area
   MenuSearchService.$inject = ['$http', 'APIBaseURL'];
   function MenuSearchService($http, APIBaseURL) {
     var service = this;
     var foundItems = [];
 
-    // getMatchedMenuItems(searchTerm)
+    // function getMatchedMenuItems(searchTerm)
     service.getMatchedMenuItems = function(searchTerm) {
       searchTerm = searchTerm.trim().toLowerCase();
 
-      return $http({
-        method: 'GET',
-        url: (APIBaseURL + '/menu_items.json')
-      })
-      .then(function(response) {
-        var items = response.data.menu_items;
-        // var foundItems = [];
+      var menuItemsResponse = service.getMenuItems();
 
-        if (!searchTerm)
-          return foundItems;
+      var result = menuItemsResponse.then(function(httpResponse) {
+        var menuItems = httpResponse.data.menu_items;
+        foundItems = [];
 
-        for (var i=0; i < items.length; i++) {
-          if (items[i].description.toLowerCase().indexOf(searchTerm) !== -1) {
-            foundItems.push(items[i]);
+        for (var i=0; i < menuItems.length; i++) {
+          if (menuItems[i].description.toLowerCase().indexOf(searchTerm) !== -1) {
+            foundItems.push(menuItems[i]);
           }
         }
         return foundItems;
@@ -67,42 +57,29 @@
         return error.data;
       });
 
-      // var httpPromise =
-      //   $http({
-      //     method: 'GET',
-      //     url: (APIBaseURL + '/menu_items.json')
-      //   })
-      //   .then(function(response) {
-      //     var items = response.data.menu_items;
-      //     // var foundItems = [];
-      //
-      //     if (!searchTerm)
-      //       return foundItems;
-      //
-      //     for (var i=0; i < items.length; i++) {
-      //       if (items[i].description.toLowerCase().indexOf(searchTerm) !== -1) {
-      //         foundItems.push(items[i]);
-      //       }
-      //     }
-      //     return foundItems;
-      //   })
-      //   .catch(function(error) {
-      //     return error.data;
-      //   });
-      //
-      // return httpPromise
-
+      return result;
     };
 
-    // removeItem(itemIndex)
-    service.removeItem = function(itemIndex) {
+    // function getMenuItems()
+    service.getMenuItems = function() {
+      var menuItemsResponse =
+        $http({
+          method: 'GET',
+          url: (APIBaseURL + '/menu_items.json')
+        });
+
+      return menuItemsResponse;
+    }
+
+    // function removeItem(itemIndex)
+    service.removeItem = function (itemIndex) {
       foundItems.splice(itemIndex, 1);
     };
 
-  } // MenuSearchService
+  }
 
-  // ##### Directives area #####
-  // FoundItemsDirective
+  // Directives area
+  // FoundItemsDirective()
   function FoundItemsDirective() {
     var ddo = {
       templateUrl: 'templates/foundItemsTemplate.html',
@@ -110,7 +87,6 @@
         items: '<',
         onRemove: '&'
       },
-      restricted: 'E',
       controller: FoundItemsDirectiveController,
       controllerAs: 'foundItemsControl',
       bindToController: true
@@ -124,20 +100,16 @@
     // isItemsExist()
     foundItemsControl.isItemsExist = function() {
       if ((foundItemsControl.items && foundItemsControl.items.length > 0 )) {
-        //console.log("isItemsExist TRUE - items.length", foundItemsControl.items.length);
         return true;
       }
-      //console.log("isItemsExist FALSE - items.length", foundItemsControl.items.length);
       return false;
     }
 
     // itemsFound()
     foundItemsControl.isItemsFound = function() {
       if ((foundItemsControl.items && foundItemsControl.items.length === 0 )) {
-        //console.log("isItemsFound FALSE - items.length", foundItemsControl.items.length);
         return false;
       }
-      //console.log("isItemsFound TRUE - items.length", foundItemsControl.items.length);
       return true;
     }
   }
