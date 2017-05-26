@@ -5,6 +5,7 @@
   .controller('NarrowItDownController', NarrowItDownController)
   .service("MenuSearchService", MenuSearchService)
   .directive("foundItems", FoundItemsDirective)
+  .directive("itemsNotFound", ItemsNotFoundDirective)
   .constant('APIBaseURL', "https://davids-restaurant.herokuapp.com");
 
   // ##### Main Controllers area #####
@@ -81,9 +82,23 @@
   }
 
   // ##### Directives area #####
+
+  // Directive FoundItemsDirective()
+  function ItemsNotFoundDirective() {
+    var ddo = {
+      restrict: 'E',
+      templateUrl: 'templates/itemsNotFound.html',
+      scope: {
+        message: '@'
+      }
+    }
+    return ddo;
+  }
+
   // Directive FoundItemsDirective()
   function FoundItemsDirective() {
     var ddo = {
+      restrict: 'E',
       templateUrl: 'templates/foundItemsTemplate.html',
       scope: {
         items: '<',
@@ -95,23 +110,29 @@
     }
     return ddo;
   }
+
   // Directive Controller FoundItemsDirectiveController()
   function FoundItemsDirectiveController() {
     var foundItemsControl = this;
+    foundItemsControl.message = "Nothing found!!!!";
 
     // function isItemsExist()
     foundItemsControl.isItemsExist = function() {
       if ((foundItemsControl.items && foundItemsControl.items.length > 0 )) {
+        console.log("isItemsExist TRUE");
         return true;
       }
+      console.log("isItemsExist FALSE");
       return false;
     }
 
     // function isItemsFound()
     foundItemsControl.isItemsFound = function() {
       if ((foundItemsControl.items && foundItemsControl.items.length === 0 )) {
+        console.log("isItemsFound FALSE");
         return false;
       }
+      console.log("isItemsFound TRUE");
       return true;
     }
   }
