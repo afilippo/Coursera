@@ -6,7 +6,7 @@
           <th>#</th>
           <th>Short Name</th>
           <th>Description</th>
-          <th>Don't want this one!</th>
+          <th>&nbsp;</th>
         </tr>
       </thead>
       <tbody>
@@ -23,6 +23,7 @@
     </table>
   </div>
 </div>
-<div class="row"
-<div class="error" ng-if="!foundItemsControl.isItemsFound()"> Nothing found! </div>
-</div>
+<!-- <div class="row"
+  <div class="error" ng-if="!foundItemsControl.isItemsFound()"> Nothing found! </div>
+</div> -->
+<items-not-found ng-if="!foundItemsControl.isItemsFound()" message={{foundItemsControl.message}}></items-not-found>
